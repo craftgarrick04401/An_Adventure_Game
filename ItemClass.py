@@ -12,10 +12,10 @@ class Item(object):
     def getItemType(self):
         return self.itemType
 
-class Equipable(Item):
+class Equippable(Item):
     def __init__(self, itemName, value, attack, defense, slot):
         Item.__init__(self, itemName, value)
-        self.itemType = 'Equipable'
+        self.itemType = 'equippable'
         self.properties['attack'] = attack
         self.properties['defense'] = defense
         self.properties['slot'] = slot

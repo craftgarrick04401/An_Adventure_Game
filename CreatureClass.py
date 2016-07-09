@@ -8,7 +8,7 @@ class Creature(object):
         self.hp = hp
         self.bag = {
             'Items': [],
-            'Equipable': [],
+            'Equippable': [],
             'Usable': [],
             'Junk': []
             }
@@ -23,16 +23,16 @@ class Creature(object):
     def add(self, itemType, itemProperties):
         if itemType == 'Item':
             self.bag['Items'].append(itemProperties)
-        if itemType == 'Equipable':
-            self.bag['Equipable'].append(itemProperties)
+        if itemType == 'equippable':
+            self.bag['equippable'].append(itemProperties)
         if itemType == 'Usable':
             self.bag['Usable'].append(itemProperties)
         else:
             self.bag['Junk'].append(itemProperties)
 
     def configure_stats(self):
-        total_attack = [x['attack'] for x in self.bag['equipable'] if x['equipped'] == True]
-        total_defense = [x['defense'] for x in self.bag['equipable'] if x['equipped'] == True]
+        total_attack = [x['attack'] for x in self.bag['equippable'] if x['equipped'] == True]
+        total_defense = [x['defense'] for x in self.bag['equippable'] if x['equipped'] == True]
         self.attack = baseAttack
         self.defense = baseDefense
         for a, b in zip(total_attack, total_defense):
@@ -40,7 +40,7 @@ class Creature(object):
             self.defense += b
 
     def unequip(itemName):
-        for i in self.bag['equipable']:
+        for i in self.bag['equippable']:
             if i['itemName'] == itemName:
                 i['equipped'] = False
                 self.configure_stats()
