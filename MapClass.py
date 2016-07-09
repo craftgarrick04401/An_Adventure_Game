@@ -1,5 +1,5 @@
 class Map:
-    def __init__(self, name):
+    def __init__(self, name, layers):
         self.name = name
         self.map = []
         self.brushes = {
@@ -55,7 +55,7 @@ class Map:
                 self.draw_point(brush, column - num, row)
                 num += 1
         else:
-            print("draw_line() diection error")
+            print("draw_line() direction error")
 
     def draw_rect(self, brush, column1, row1, column2, row2):
         length = abs(column1 - column2)
