@@ -4,7 +4,7 @@ class Map:
         self.size = size
         self.layer = 0
         self.layers = layers
-        self.mapArray = [[[x for x in ['u'] * layers] for x in range(size)] for x in range(size)]
+        self.mapArray = [[[x for x in [' '] * layers] for x in range(size)] for x in range(size)]
     
     def show(self):
         print('Map: ' + self.name)
@@ -12,12 +12,35 @@ class Map:
         print(' ')
         print("      " + " ".join([str(x) for x in range(self.size)]))
         for i in range(self.size):
-            print("    " + str(i) + " " + " ".join([x[self.layer] for x in [x for x in self.mapArray[i]]]))
+            if i <= 9:
+                print("    " + str(i) + " " + " ".join([x[self.layer] for x in [x for x in self.mapArray[i]]]))
+            else:
+                print("   " + str(i) + " " + " ".join([x[self.layer] for x in [x for x in self.mapArray[i]]]))
         print(' ')
             
     def changeLayer(self, increment):
+        #changes the current layer
         self.layer += increment
         
-    def drawPoint(self, row, column):
-        self.mapArray[row][column][self.layer] = 'h'
+    def drawPoint(self, row, column, brush):
+        #draws a point on the current layer
+        self.mapArray[row][column][self.layer] = brush
+        
+    def drawLine(self, startRow, startColumn, endRow, endColumn, brush):
+        #always left to right or up to down
+        if startRow == endRow:
+            for i in range((endColumn - startColumn) + 1):
+                self.drawPoint(startRow, startColumn + i, brush)
+        else:
+            for i in range((endRow - startRow) + 1):
+                self.drawPoint(startRow + i, startColumn, brush)
+                
+    def drawRect(self, startRow, startColumn, endRow, endColumn, brush):
+        #always top left to bottom right
+        self.drawLine(startRow, startColumn, endRow, startColumn, brush)
+        self.drawLine(startRow, startColumn, startRow, endColumn, brush)
+        self.drawLine(startRow, endColumn, endRow, endColumn, brush)
+        self.drawLine(endRow, startColumn, endRow, endColumn, brush)
+                
+            
         
