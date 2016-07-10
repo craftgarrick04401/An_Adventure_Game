@@ -4,25 +4,17 @@ from MapClass import Map
 
 #Maps
 
-demoMap = Map('Demo Map')
-demoMap.draw_rect('wall', 0, 0, 9, 9)
-demoMap.draw_line('erase', 3, 9, 3, 'E')
-demoMap.draw_line('erase', 3, 0, 3, 'E')
-demoMap.draw_rect('drop', 2, 2, 7, 7)
-demoMap.draw_line('erase', 4, 7, 1, 'E')
-demoMap.draw_line('erase', 4, 2, 1, 'E')
+demoMap = Map('Demo Map', 10, 2)
+demoMap.drawPoint(3, 3)
+demoMap.show()
+demoMap.changeLayer(1)
+demoMap.drawPoint(5, 5)
 demoMap.show()
 
 
-#Creatures
 player = Creature('Player', 1, 1, 20)
 
 #Items
-stick = Junk('Stick', 0)
-print(stick.getItemType())
-print(stick.getItemProperties())
-player.add(stick.getItemType(), stick.getItemProperties())
-print(player.bag)
 
 
 def main():
