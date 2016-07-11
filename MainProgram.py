@@ -1,28 +1,31 @@
 from CreatureClass import Creature
 from ItemClass import *
 from MapClass import Map
+from Items import Equippable
 
 #Maps
+"""
 dm = Map('Demo Map', 20, 2)
 dm.drawRect(0, 0, 19, 19, 'X')
 dm.drawRect(7, 7, 11, 11, 'X')
 dm.drawPoint(7, 9, ' ')
 dm.drawPoint(11, 9, ' ')
-
+dm.show()
+dm.changeLayer(1)
+dm.drawPoint(5, 5, 'H')
+dm.show()
+"""
 #Creatures
 player = Creature('Player', 1, 1, 20)
 
 #Items
-item1 = Equippable('Sword', 0, 5, 0, 'MainHand')
 
-print(player.bag['Equippable'])
-player.stats()
-player.add(item1.getItemType(), item1.getItemProperties())
-player.equip('Sword')
-print(player.bag['Equippable'])
-player.stats()
-player.unequip('Sword')
-player.stats()
+item1 = Equippable('Dagger', 10, 5, 0, 'MainHand')
+item2 = Equippable('Robes', 10, 0, 3, 'Chest')
+item3 = Equippable('Hood', 10, 0, 2, 'Head')
+item4 = Equippable('Shoes', 7, 0, 1, 'Feet')
+item5 = Equippable('Pants', 10, 0, 3, 'Pants')
+
 #Main Method
 def main():
     while 1:
