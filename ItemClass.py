@@ -15,7 +15,7 @@ class Item(object):
 class Equippable(Item):
     def __init__(self, itemName, value, attack, defense, slot):
         Item.__init__(self, itemName, value)
-        self.itemType = 'equippable'
+        self.itemType = 'Equippable'
         self.properties['attack'] = attack
         self.properties['defense'] = defense
         self.properties['slot'] = slot
@@ -23,10 +23,11 @@ class Equippable(Item):
         
 
 class Usable(Item):
-    def __init__(self, itemName, value):
+    def __init__(self, itemName, value, useDescription):
         Item.__init__(self, itemName, value)
         self.itemType = 'Usable'
         self.properties['usable'] = True
+        self.properties['useDescription'] = useDescription
 
 class Junk(Item):
     def __init__(self, itemName, value):

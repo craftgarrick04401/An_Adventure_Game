@@ -10,12 +10,12 @@ class Map:
         print('Map: ' + self.name)
         print('Floor: ' + str(self.layer + 1))
         print(' ')
-        print("      " + " ".join([str(x) for x in range(self.size)]))
+        print("      " + "  ".join([str(x) for x in range(self.size) if x < 10]) + "  " + " ".join([str(x) for x in range(self.size) if x >= 10]))
         for i in range(self.size):
-            if i <= 9:
-                print("    " + str(i) + " " + " ".join([x[self.layer] for x in [x for x in self.mapArray[i]]]))
+            if i < 10:
+                print("    " + str(i) + " " + "  ".join([x[self.layer] for x in [x for x in self.mapArray[i]]]))
             else:
-                print("   " + str(i) + " " + " ".join([x[self.layer] for x in [x for x in self.mapArray[i]]]))
+                print("   " + str(i) + " " + "  ".join([x[self.layer] for x in [x for x in self.mapArray[i]]]))
         print(' ')
             
     def changeLayer(self, increment):
