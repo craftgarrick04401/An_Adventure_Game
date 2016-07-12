@@ -39,6 +39,7 @@ class Creature(object):
     def add(self, itemProperties):
         item = self.checkBag(itemProperties['itemName'])
         if item == []:
+            print(itemProperties)
             itemType = itemProperties['itemType']
             if itemType == 'Items':
                 self.bag['Items'].append(itemProperties)

@@ -1,7 +1,6 @@
 from CreatureClass import Creature
 from ItemClass import *
 from MapClass import Map
-from Items import Equippable
 
 #Maps
 """
@@ -24,7 +23,8 @@ item1 = Equippable('Dagger', 10, 5, 0, 'MainHand')
 item2 = Equippable('Robes', 10, 0, 3, 'Chest')
 item3 = Equippable('Hood', 10, 0, 2, 'Head')
 item4 = Equippable('Shoes', 7, 0, 1, 'Feet')
-item5 = Equippable('Pants', 10, 0, 3, 'Pants')
+item5 = Equippable('Pants', 10, 0, 3, 'Legs')
+startingGear = [item1, item2, item3, item4, item5]
 
 #Main Method
 def main():
@@ -35,7 +35,10 @@ def main():
         if choice == 'Y':
             choice = str(input("What is your name?"))
             player = Creature(choice, 1, 0, 20)
-            
+            for i in startingGear:
+                player.add(i.getItem())
+            for i in player.bag['Equippable']:
+                player.equip(i['itemName'])
             
             while 1:
                 choice = input("What 'Will' you do? (move, bag, stats, quit)").lower()
@@ -68,7 +71,7 @@ def main():
                                 if choice == 'back' or choice == 'b':
                                     break
                                 else:
-                                    player.unequip(choice, False)
+                                    player.unequip(choice)
                         if choice == 'refresh' or choice == 'r':
                             player.stats()
                         if choice == 'back' or choice == 'b':
@@ -79,7 +82,7 @@ def main():
                 
                 
                 
-                
+main()
                 
                 
                 
