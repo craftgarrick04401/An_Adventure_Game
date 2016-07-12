@@ -3,17 +3,17 @@ from ItemClass import *
 from MapClass import Map
 
 #Maps
-"""
+
 dm = Map('Demo Map', 20, 2)
 dm.drawRect(0, 0, 19, 19, 'X')
 dm.drawRect(7, 7, 11, 11, 'X')
 dm.drawPoint(7, 9, ' ')
 dm.drawPoint(11, 9, ' ')
-dm.show()
 dm.changeLayer(1)
 dm.drawPoint(5, 5, 'H')
-dm.show()
-"""
+dm.changeLayer(-1)
+maps = [dm]
+
 #Creatures
 player = Creature('Player', 1, 1, 20)
 
@@ -33,6 +33,7 @@ def main():
         if choice == 'N':
             break
         if choice == 'Y':
+            currentMap = 0
             choice = str(input("What is your name?"))
             player = Creature(choice, 1, 0, 20)
             for i in startingGear:
@@ -41,8 +42,10 @@ def main():
                 player.equip(i['itemName'])
             
             while 1:
-                choice = input("What 'Will' you do? (move, bag, stats, quit)").lower()
-                if choice == 'move' or choice == 'm':
+                choice = input("What 'Will' you do? (move, map, bag, stats, quit)").lower()
+                if choice == 'map':
+                    maps[currentMap].show()
+                if choice == 'move':
                     pass
                 if choice == 'bag' or choice == 'b':
                     player.inv()

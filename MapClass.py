@@ -7,6 +7,8 @@ class Map:
         self.mapArray = [[[x for x in [' '] * layers] for x in range(size)] for x in range(size)]
     
     def show(self):
+        print('-' * 40)
+        print(' ')
         print('Map: ' + self.name)
         print('Floor: ' + str(self.layer + 1))
         print(' ')
@@ -17,6 +19,7 @@ class Map:
             else:
                 print("   " + str(i) + " " + "  ".join([x[self.layer] for x in [x for x in self.mapArray[i]]]))
         print(' ')
+        print('-' * 40)
             
     def changeLayer(self, increment):
         #changes the current layer
@@ -41,6 +44,27 @@ class Map:
         self.drawLine(startRow, startColumn, startRow, endColumn, brush)
         self.drawLine(startRow, endColumn, endRow, endColumn, brush)
         self.drawLine(endRow, startColumn, endRow, endColumn, brush)
+        
+    def moveObject(self, direction, amount, row, column):
+        if direction == 'N':
+            if self.mapArray[row + 1][column][self.layer] == ' ':
+                self.mapArray[row + 1][column][self.layer] = self.mapArray[row][column][self.layer]
+                self.mapArray[row][column][self.layer] = ' '
+                return
+        if direction == 'E':
+            if self.mapArray[row][column + 1][self.layer] == ' ':
+                self.mapArray[row][column + 1][self.layer] = self.mapArray[row][column][self.layer]
+                self.mapArray[row][column][self.layer] = ' '
+        if direction == 'S':
+            if self.mapArray[row - 1][column][self.layer] == ' ':
+                self.mapArray[row - 1][column][self.layer] = self.mapArray[row][column][self.layer]
+                self.mapArray[row][column][self.layer] = ' '
+        if direction == 'W':
+            if self.mapArray[row][column - 1][self.layer] == ' ':
+                self.mapArray[row][column - 1][self.layer] = self.mapArray[row][column][self.layer]
+                self.mapArray[row][column][self.layer] = ' '
+            
+        
                 
             
         

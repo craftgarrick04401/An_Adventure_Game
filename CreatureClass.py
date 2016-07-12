@@ -2,6 +2,7 @@ from random import randint
 class Creature(object):
     def __init__(self, name, attack, defense, hp):
         self.name = name
+        self.alive = True
         self.baseAttack = attack
         self.attack = attack
         self.baseDefense = defense
@@ -39,7 +40,6 @@ class Creature(object):
     def add(self, itemProperties):
         item = self.checkBag(itemProperties['itemName'])
         if item == []:
-            print(itemProperties)
             itemType = itemProperties['itemType']
             if itemType == 'Items':
                 self.bag['Items'].append(itemProperties)
@@ -180,6 +180,39 @@ class Creature(object):
                 if i == item:
                     i['equipped'] = False
             print("%s unequipped %s!" %(self.name, itemName))
+            
+    def takingDamage(self, amount):
+        if amount != False:
+            if self.defense > amount:
+                amount = 0
+            else:
+                amount -= self.defense
+            if amount > self.hp:
+                self.hp = 0
+                self.alive = 0
+            else:
+                self.hp -= amount
+            print("%s takes %s damage!" &(self.name, amount))
+        else:
+            pass
+            
+    def rollAttack(self):
+        attack = self.attack
+        attackModifier = randint(1, 21)
+        if attackModifier == 20:
+            print("Critical Hit!")
+            attack *= 2
+            print()
+            return attack
+        elif(attackModifier == 1):
+            print("Critical Fail!")
+            self.takingDamage(attack)
+            return False
+        else:
+            return attack
+            
+            
+        
 
         
         
