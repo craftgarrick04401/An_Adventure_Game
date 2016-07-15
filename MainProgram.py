@@ -2,6 +2,7 @@ from CreatureClass import Creature
 from ItemClass import *
 from MapClass import Map
 
+
 #Maps
 
 dm = Map('Demo Map', 20, 2)
@@ -26,6 +27,8 @@ item4 = Equippable('Shoes', 7, 0, 1, 'Feet')
 item5 = Equippable('Pants', 10, 0, 3, 'Legs')
 startingGear = [item1, item2, item3, item4, item5]
 
+item6 = Usable('Healing Potion', 10, "Restore 10 Hp", 'rhp', 10)
+
 #Main Method
 def main():
     while 1:
@@ -40,6 +43,7 @@ def main():
                 player.add(i.getItem())
             for i in player.bag['Equippable']:
                 player.equip(i['itemName'])
+            player.addAmount(item6.getItem(), 10)
             
             while 1:
                 choice = input("What 'Will' you do? (move, map, bag, stats, quit)").lower()
@@ -59,7 +63,12 @@ def main():
                                 else:
                                     player.equip(choice)
                         if choice == 'use' or choice == 'u':
-                            pass
+                            while 1:
+                                choice = str(input("Choose an item... (back)"))
+                                if choice == 'back' or choice == 'b':
+                                    break
+                                else:
+                                    player.use(choice)
                         if choice == 'refresh' or choice == 'r':
                             player.inv()
                         if choice == 'back' or choice == 'b':

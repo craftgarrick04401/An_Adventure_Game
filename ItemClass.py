@@ -18,13 +18,14 @@ class Equippable(Item):
         self.properties['slot'] = slot
         self.properties['equipped'] = False
         
-
 class Usable(Item):
-    def __init__(self, itemName, value, useDescription):
+    def __init__(self, itemName, value, useDescription, useType, useValue):
         Item.__init__(self, itemName, value)
         self.properties['itemType'] = 'Usable'
         self.properties['usable'] = True
         self.properties['useDescription'] = useDescription
+        self.properties['useType'] = useType
+        self.properties['useValue'] = useValue
 
 class Junk(Item):
     def __init__(self, itemName, value):

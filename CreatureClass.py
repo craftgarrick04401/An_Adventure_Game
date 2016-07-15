@@ -8,6 +8,7 @@ class Creature(object):
         self.baseDefense = defense
         self.defense = defense
         self.hp = hp
+        self.baseHp = hp
         self.bag = {
             'Items': [],
             'Equippable': [],
@@ -114,7 +115,7 @@ class Creature(object):
             print("    (none)")
         else:
             for i in self.bag['Usable']:
-                print("    " + i['itemName'] + ':', "Amount: " + str(i['amount']), "Value: " + str(i['value']), "Use: " + i['useDescription'])
+                print("    " + i['itemName'] + ':', "Amount: " + str(i['amount']), "Value: " + str(i['value']), "Use: " + '(' + i['useDescription'] + ')')
         print(" ")
         print("Junk:")
         print(" ")
@@ -210,6 +211,40 @@ class Creature(object):
             return False
         else:
             return attack
+    
+    def restoreHp(self, amount):
+        if self.hp + amount > self.baseHp:
+            self.hp = self.baseHp
+        else:
+            self.hp += amount
+    
+    def increasebaseHp(self, amount):
+        self.baseHp += amount
+        self.hp = baseHp
+        
+    def increaseBaseAttack(self, amount):
+        self.baseAttack += amount
+        self.configureStats()
+        
+    def increaseBaseDefense(self, amount):
+        self.baseDefense += amount
+        self.configureStats()
+    
+    def use(self, itemName):
+        item = self.checkBag(itemName)
+        self.remove(itemName)
+        if item['useType'] == 'rhp':
+            self.restoreHp(item['useValue'])
+        elif item['useType'] == 'ibhp':
+            self.increasebaseHp(item['useValue'])
+        elif item['useType'] == 'iba':
+            self.increaseBaseAttack(item['useValue'])
+        elif item['useType'] == 'ibd':
+            self.increaseBaseDefense(item['useValue'])
+        else:
+            print("Could not find item or item was not Usable")
+        
+        
             
             
         

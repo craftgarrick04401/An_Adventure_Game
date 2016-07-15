@@ -1,4 +1,4 @@
-class Map:
+class Map(object):
     def __init__(self, name, size, layers):
         self.name = name
         self.size = size
