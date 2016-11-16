@@ -22,15 +22,15 @@ class Map(object):
         print('-' * 40)
             
     def changeLayer(self, increment):
-        #changes the current layer
+        """changes the current map layer by the increment passed"""
         self.layer += increment
         
     def drawPoint(self, row, column, brush):
-        #draws a point on the current layer
+        """draws a point on the map"""
         self.mapArray[row][column][self.layer] = brush
         
     def drawLine(self, startRow, startColumn, endRow, endColumn, brush):
-        #always left to right or up to down
+        """draws a line on the map, always from left to right or up to down"""
         if startRow == endRow:
             for i in range((endColumn - startColumn) + 1):
                 self.drawPoint(startRow, startColumn + i, brush)
@@ -39,14 +39,15 @@ class Map(object):
                 self.drawPoint(startRow + i, startColumn, brush)
                 
     def drawRect(self, startRow, startColumn, endRow, endColumn, brush):
-        #always top left to bottom right
+        """draws a rectangle on the map, always from top left to bottom right"""
         self.drawLine(startRow, startColumn, endRow, startColumn, brush)
         self.drawLine(startRow, startColumn, startRow, endColumn, brush)
         self.drawLine(startRow, endColumn, endRow, endColumn, brush)
         self.drawLine(endRow, startColumn, endRow, endColumn, brush)
         
     def moveObject(self, direction, amount, row, column):
-        if direction == 'N':
+        """needs fixing"""
+        if direction == 'S':
             if self.mapArray[row + 1][column][self.layer] == ' ':
                 self.mapArray[row + 1][column][self.layer] = self.mapArray[row][column][self.layer]
                 self.mapArray[row][column][self.layer] = ' '
@@ -55,16 +56,24 @@ class Map(object):
             if self.mapArray[row][column + 1][self.layer] == ' ':
                 self.mapArray[row][column + 1][self.layer] = self.mapArray[row][column][self.layer]
                 self.mapArray[row][column][self.layer] = ' '
-        if direction == 'S':
-            if self.mapArray[row - 1][column][self.layer] == ' ':
-                self.mapArray[row - 1][column][self.layer] = self.mapArray[row][column][self.layer]
-                self.mapArray[row][column][self.layer] = ' '
+        if direction == 'N':
+            for i in range(amount):
+                if self.mapArray[row - 1][column][self.layer] == ' ':
+                    self.mapArray[row - 1][column][self.layer] = self.mapArray[row][column][self.layer]
+                    self.mapArray[row][column][self.layer] = ' '
+                else:
+                    break
+                row += 1
         if direction == 'W':
             if self.mapArray[row][column - 1][self.layer] == ' ':
                 self.mapArray[row][column - 1][self.layer] = self.mapArray[row][column][self.layer]
                 self.mapArray[row][column][self.layer] = ' '
             
-        
+if __name__ == '__main__':
+    testMap = Map('testMap', 20, 3)
+    testMap.drawRect(5, 10, 10, 17, 'X')
+    testMap.moveObject('N', 4, 5, 10)
+    testMap.show()
                 
             
         
