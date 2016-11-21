@@ -46,33 +46,45 @@ class Map(object):
         self.drawLine(endRow, startColumn, endRow, endColumn, brush)
         
     def moveObject(self, direction, amount, row, column):
-        """needs fixing"""
+        """Moves an object on the map based on the direction and amount. Directions are 'N', 'S', 'E', and 'W'."""
         if direction == 'S':
-            if self.mapArray[row + 1][column][self.layer] == ' ':
-                self.mapArray[row + 1][column][self.layer] = self.mapArray[row][column][self.layer]
-                self.mapArray[row][column][self.layer] = ' '
-                return
+            for i in range(amount):
+                if self.mapArray[row + 1][column][self.layer] == ' ':
+                    self.mapArray[row + 1][column][self.layer] = self.mapArray[row][column][self.layer]
+                    self.mapArray[row][column][self.layer] = ' '
+                    row += 1
+                else:
+                    break
         if direction == 'E':
-            if self.mapArray[row][column + 1][self.layer] == ' ':
-                self.mapArray[row][column + 1][self.layer] = self.mapArray[row][column][self.layer]
-                self.mapArray[row][column][self.layer] = ' '
+            for i in range(amount):
+                if self.mapArray[row][column + 1][self.layer] == ' ':
+                    self.mapArray[row][column + 1][self.layer] = self.mapArray[row][column][self.layer]
+                    self.mapArray[row][column][self.layer] = ' '
+                    column += 1
+                else:
+                    break
         if direction == 'N':
             for i in range(amount):
                 if self.mapArray[row - 1][column][self.layer] == ' ':
                     self.mapArray[row - 1][column][self.layer] = self.mapArray[row][column][self.layer]
                     self.mapArray[row][column][self.layer] = ' '
+                    row -= 1
                 else:
                     break
-                row += 1
         if direction == 'W':
-            if self.mapArray[row][column - 1][self.layer] == ' ':
-                self.mapArray[row][column - 1][self.layer] = self.mapArray[row][column][self.layer]
-                self.mapArray[row][column][self.layer] = ' '
+            for i in range(amount):
+                if self.mapArray[row][column - 1][self.layer] == ' ':
+                    self.mapArray[row][column - 1][self.layer] = self.mapArray[row][column][self.layer]
+                    self.mapArray[row][column][self.layer] = ' '
+                    column -= 1
+                else:
+                    break
             
 if __name__ == '__main__':
     testMap = Map('testMap', 20, 3)
-    testMap.drawRect(5, 10, 10, 17, 'X')
-    testMap.moveObject('N', 4, 5, 10)
+    testMap.drawPoint(10, 10, 'X')
+    testMap.drawRect(9, 9, 11, 11, 'U')
+    testMap.moveObject('N', 7, 10, 10)
     testMap.show()
                 
             
