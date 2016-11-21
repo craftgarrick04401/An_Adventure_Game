@@ -7,6 +7,7 @@ class Item(object):
             'itemType': 'Items'
             }
     def getItem(self):
+        """returns a dictionary of the item's properties"""
         return self.properties
 
 class Equippable(Item):

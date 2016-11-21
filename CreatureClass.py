@@ -1,4 +1,6 @@
 from random import randint
+from ItemClass import *
+
 class Creature(object):
     def __init__(self, name, attack, defense, hp):
         self.name = name
@@ -26,7 +28,7 @@ class Creature(object):
     
     def checkBag(self, itemName):
         checkItems = [x for x in self.bag['Items'] if itemName == x['itemName']]
-        checkEquippable = [x for x in self.bag['Equippable'] if itemName == x['itemName'] and x['equipped']]
+        checkEquippable = [x for x in self.bag['Equippable'] if itemName == x['itemName']]
         checkUsable = [x for x in self.bag['Usable'] if itemName == x['itemName']]
         checkJunk = [x for x in self.bag['Junk'] if itemName == x['itemName']]
         item = [checkEquippable, checkItems, checkJunk, checkUsable]
@@ -40,16 +42,12 @@ class Creature(object):
         
     def add(self, itemProperties):
         item = self.checkBag(itemProperties['itemName'])
+        print(item)
         if item == []:
             itemType = itemProperties['itemType']
             if itemType == 'Items':
                 self.bag['Items'].append(itemProperties)
             if itemType == 'Equippable':
-                itemProperties['tag'] = randint(0, 1000)
-                conflictingTag = [x['tag'] for x in self.bag[itemType]]
-                if not conflictingTag == []:
-                    while conflictingTag[0] == itemProperties['tag']:
-                        itemProperties['tag'] = randint(0, 1000)
                 self.bag['Equippable'].append(itemProperties)
             if itemType == 'Usable':
                 self.bag['Usable'].append(itemProperties)
@@ -105,9 +103,9 @@ class Creature(object):
         else:
             for i in self.bag['Equippable']:
                 if i['equipped']:
-                    print("    " + i['itemName'] + ':', "Value: " + str(i['value']), "Atk: " + str(i['attack']), "Def: " + str(i['defense']), "Slot: " + i['slot'], "(equipped)")
+                    print("    [" + i['itemName'] + ']:', " Amount:", str(i['amount']), " Value: " + str(i['value']), " Atk: " + str(i['attack']), " Def: " + str(i['defense']), " Slot: " + i['slot'], " (equipped)")
                 else:
-                    print("    " + i['itemName'] + ':', "Value: " + str(i['value']), "Atk: " + str(i['attack']), "Def: " + str(i['defense']), "Slot: " + i['slot'])
+                    print("    [" + i['itemName'] + ']:', " Amount:", str(i['amount']), " Value: " + str(i['value']), " Atk: " + str(i['attack']), " Def: " + str(i['defense']), " Slot: " + i['slot'])
         print(" ")
         print("Usable:")
         print(" ")
@@ -193,7 +191,7 @@ class Creature(object):
                 self.alive = 0
             else:
                 self.hp -= amount
-            print("%s takes %s damage!" &(self.name, amount))
+            print("%s takes %s damage!" %(self.name, amount))
         else:
             pass
             
@@ -215,20 +213,25 @@ class Creature(object):
     def restoreHp(self, amount):
         if self.hp + amount > self.baseHp:
             self.hp = self.baseHp
+            print('%s heals to full' %(self.name))
         else:
+            print('%s heals for %s' %(self.name, amount))
             self.hp += amount
     
     def increasebaseHp(self, amount):
         self.baseHp += amount
-        self.hp = baseHp
+        self.hp = self.baseHp
+        print('your base Hp increased by %s' %(amount))
         
     def increaseBaseAttack(self, amount):
         self.baseAttack += amount
         self.configureStats()
+        print('your base Attack increased by %s' %(amount))
         
     def increaseBaseDefense(self, amount):
         self.baseDefense += amount
         self.configureStats()
+        print('your base Defense increased by %s' %(amount))
     
     def use(self, itemName):
         item = self.checkBag(itemName)
@@ -245,8 +248,31 @@ class Creature(object):
             print("Could not find item or item was not Usable")
         
         
-            
-            
+if __name__ == '__main__':
+    player = Creature('player', 5, 2, 10)
+    print('Checking Inventory...')
+    player.inv()
+    print('Checking Stats...')
+    player.stats()
+    print('adding stuff...')
+    rock = Equippable('rock', 0, 1, 0, 'MainHand')
+    player.addAmount(rock.getItem(), 5)
+    player.inv()
+    player.equip('rock')
+    player.inv()
+    player.stats()
+    print('taking damage...')
+    player.takingDamage(player.rollAttack())
+    player.stats()
+    print('restoring hp...')
+    player.restoreHp(20)
+    player.stats()
+    print('increasing stats...')
+    player.increaseBaseAttack(3)
+    player.increaseBaseDefense(3)
+    player.increasebaseHp(20)
+    player.stats()
+    
         
 
         

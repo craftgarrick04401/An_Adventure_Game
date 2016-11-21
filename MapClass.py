@@ -46,7 +46,7 @@ class Map(object):
         self.drawLine(endRow, startColumn, endRow, endColumn, brush)
         
     def moveObject(self, direction, amount, row, column):
-        """Moves an object on the map based on the direction and amount. Directions are 'N', 'S', 'E', and 'W'."""
+        """Moves an object on the map based on the direction and amount. Directions are 'N', 'S', 'E', and 'W'"""
         if direction == 'S':
             for i in range(amount):
                 if self.mapArray[row + 1][column][self.layer] == ' ':
