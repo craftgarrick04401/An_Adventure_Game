@@ -2,7 +2,7 @@ class Map(object):
     def __init__(self, name, size, layers):
         self.name = name
         self.size = size
-        self.layer = 0
+        self.layer = 1
         self.layers = layers
         self.mapArray = [[[x for x in [' '] * layers] for x in range(size)] for x in range(size)]
     
@@ -10,7 +10,7 @@ class Map(object):
         print('-' * 40)
         print(' ')
         print('Map: ' + self.name)
-        print('Floor: ' + str(self.layer + 1))
+        print('Floor: ' + str(self.layer))
         print(' ')
         print("      " + "  ".join([str(x) for x in range(self.size) if x < 10]) + "  " + " ".join([str(x) for x in range(self.size) if x >= 10]))
         for i in range(self.size):
@@ -81,11 +81,6 @@ class Map(object):
                     break
             
 if __name__ == '__main__':
-    testMap = Map('testMap', 20, 3)
-    testMap.drawPoint(10, 10, 'X')
-    testMap.drawRect(9, 9, 11, 11, 'U')
-    testMap.moveObject('N', 7, 10, 10)
-    testMap.show()
-                
+    pass    
             
         

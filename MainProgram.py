@@ -1,100 +1,139 @@
 from CreatureClass import Creature
 from ItemClass import *
 from MapClass import Map
+from random import randint, choice
+from time import sleep
 
-
-#Maps
-
-dm = Map('Demo Map', 20, 2)
-dm.drawRect(0, 0, 19, 19, 'X')
-dm.drawRect(7, 7, 11, 11, 'X')
-dm.drawPoint(7, 9, ' ')
-dm.drawPoint(11, 9, ' ')
-dm.changeLayer(1)
-dm.drawPoint(5, 5, 'H')
-dm.changeLayer(-1)
-maps = [dm]
-
-#Creatures
-player = Creature('Player', 1, 1, 20)
-
-#Items
-
-item1 = Equippable('Dagger', 10, 5, 0, 'MainHand')
-item2 = Equippable('Robes', 10, 0, 3, 'Chest')
-item3 = Equippable('Hood', 10, 0, 2, 'Head')
-item4 = Equippable('Shoes', 7, 0, 1, 'Feet')
-item5 = Equippable('Pants', 10, 0, 3, 'Legs')
-startingGear = [item1, item2, item3, item4, item5]
-
-item6 = Usable('Healing Potion', 10, "Restore 10 Hp", 'rhp', 10)
-
-#Main Method
-def main():
-    while 1:
-        choice = input("New Game? (Y/N)").upper()
-        if choice == 'N':
-            break
-        if choice == 'Y':
-            currentMap = 0
-            choice = str(input("What is your name?"))
-            player = Creature(choice, 1, 0, 20)
-            for i in startingGear:
-                player.add(i.getItem())
-            for i in player.bag['Equippable']:
-                player.equip(i['itemName'])
-            player.addAmount(item6.getItem(), 10)
+def developer():
+    
+    map1 = Map('Abandoned Building', 10, 5)
+    
+    uinput = 0
+    actions = []
+    
+    while uinput != 'q':
+        
+        map1.show()
+        
+        uinput = input("map action...").lower()
+    
+        if uinput == 'r':
+            x1 = int(input("X1..."))
+            y1 = int(input("Y1..."))
+            x2 = int(input("X2..."))
+            y2 = int(input("Y2..."))
+            brush = input("Brush...")
             
-            while 1:
-                choice = input("What 'Will' you do? (move, map, bag, stats, quit)").lower()
-                if choice == 'map':
-                    maps[currentMap].show()
-                if choice == 'move':
-                    pass
-                if choice == 'bag' or choice == 'b':
-                    player.inv()
-                    while 1:
-                        choice = input("(equip, use, refresh, back)").lower()
-                        if choice == 'equip' or choice == 'e':
-                            while 1:
-                                choice = str(input("Choose an item... (back)"))
-                                if choice == 'back' or choice == 'b':
-                                    break
-                                else:
-                                    player.equip(choice)
-                        if choice == 'use' or choice == 'u':
-                            while 1:
-                                choice = str(input("Choose an item... (back)"))
-                                if choice == 'back' or choice == 'b':
-                                    break
-                                else:
-                                    player.use(choice)
-                        if choice == 'refresh' or choice == 'r':
-                            player.inv()
-                        if choice == 'back' or choice == 'b':
-                            break
-                if choice == 'stats' or choice == 's':
-                    player.stats()
-                    while 1:
-                        choice = input("(unequip, refresh, back)").lower()
-                        if choice == 'unequip' or choice == 'u':
-                            while 1:
-                                choice = str(input("Choose an item... (back)"))
-                                if choice == 'back' or choice == 'b':
-                                    break
-                                else:
-                                    player.unequip(choice)
-                        if choice == 'refresh' or choice == 'r':
-                            player.stats()
-                        if choice == 'back' or choice == 'b':
-                            break
-                if choice == 'quit' or choice == 'q':
-                    break
+            map1.drawRect(x1, y1, x2, y2, brush)
+            actions.append(['rect:', x1, y1, x2, y2, brush, map1.layer])
+            
+        elif uinput == 'l':
+            x1 = int(input("X1..."))
+            y1 = int(input("Y1..."))
+            x2 = int(input("X2..."))
+            y2 = int(input("Y2..."))
+            brush = input("Brush...")
+            
+            map1.drawLine(x1, y1, x2, y2, brush)
+            actions.append(['line:', x1, y1, x2, y2, brush, map1.layer])
+            
+        elif uinput == 'p':
+            x = int(input("X1..."))
+            y = int(input("Y1..."))
+            brush = input("Brush...")
+            
+            map1.drawPoint(x, y, brush)
+            actions.append(['point:', x, y, brush, map1.layer])
+            
+        elif uinput == 'c':
+            layer = int(input("Jump to Layer..."))
+            
+            map1.changeLayer(layer - map1.layer)
+        
+        
+    for i in actions:
+        print(i)
+        
+def encounter(player, opponent):
+    
+    if player.initiative > opponent.initiative:
+        
+        first = player.name
+        
+    elif opponent.initiative > player.initiative:
+        
+        first = opponent.name
+        
+    else:
+        
+        first = choice([player.name, opponent.name])
+        
+    while player.alive and opponent.alive:
+        
+        sleep(0.5)
+        
+        if first == player.name:
+            
+            wfi(True, player=player, opponent=opponent)
+            sleep(0.5)
+            
+            if player.alive and opponent.alive:
                 
+                opponent.playStatus()
+                sleep(0.5)
+                player.hurt(opponent.rollAttack())
+            
+        else:
+            
+            player.hurt(opponent.rollAttack())
+            sleep(0.5)
+            
+            if player.alive and opponent.alive:
                 
+                wfi(True, player=player, opponent=opponent)
+                sleep(0.5)
+                opponent.playStatus()
+        
+def wfi(danger=False, player=False, opponent=False):
+    
+    while 1:
+        
+        if danger:
+            
+            uinput = input("What 'WILL' you do? (attack, inventory, status)").lower()
+            
+            if uinput == 'a' or uinput == 'attack':
                 
+                opponent.hurt(player.rollAttack())
+                break
+            
+            elif uinput == 'inv' or uinput == 'inventory':
+                pass
+            elif uinput == 's' or uinput == 'status':
                 
-main()
+                print("\n%s: Hp = %s, Attack = %s, Defense = %s\n" %(player.name, player.hp, player.attack, player.defense))
+            
+        else:
+            
+            uinput = input("What 'Will' you do? (inventory, character, map, move)").lower()
+        
+            if uinput == 'inv' or 'inventory':
+                pass
+            elif uinput == 'char' or 'character':
+                pass
+            elif uinput == 'map':
+                pass
+            elif uinput == 'move':
+                pass
+
+if __name__ == '__main__':
+    
+    player = Creature('player', initiative=5, hp=30, attack=5, defense=3)
+    monster = Creature('monster', attack=7, hp=16)
+    
+    encounter(player, monster)
+        
+
                 
                 
                 

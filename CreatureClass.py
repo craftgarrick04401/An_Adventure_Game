@@ -1,283 +1,204 @@
-from random import randint
+from InventoryClass import Inventory
 from ItemClass import *
+from random import randint
 
 class Creature(object):
-    def __init__(self, name, attack, defense, hp):
-        self.name = name
-        self.alive = True
-        self.baseAttack = attack
-        self.attack = attack
-        self.baseDefense = defense
-        self.defense = defense
-        self.hp = hp
-        self.baseHp = hp
-        self.bag = {
-            'Items': [],
-            'Equippable': [],
-            'Usable': [],
-            'Junk': []
-            }
-        self.slots = {
-            'MainHand': '(none)',
-            'OffHand': '(none)',
-            'Chest': '(none)',
-            'Head': '(none)',
-            'Legs': '(none)',
-            'Feet': '(none)'
-            }
     
-    def checkBag(self, itemName):
-        checkItems = [x for x in self.bag['Items'] if itemName == x['itemName']]
-        checkEquippable = [x for x in self.bag['Equippable'] if itemName == x['itemName']]
-        checkUsable = [x for x in self.bag['Usable'] if itemName == x['itemName']]
-        checkJunk = [x for x in self.bag['Junk'] if itemName == x['itemName']]
-        item = [checkEquippable, checkItems, checkJunk, checkUsable]
-        for i in range(len(item)):
-            if item[i] != []:
-                item = item[i][0]
-                break
-        else:
-            item = []
-        return item
+    def __init__(self, name, initiative=3, hp=10, attack=0, defense=0):
         
-    def add(self, itemProperties):
-        item = self.checkBag(itemProperties['itemName'])
-        print(item)
-        if item == []:
-            itemType = itemProperties['itemType']
-            if itemType == 'Items':
-                self.bag['Items'].append(itemProperties)
-            if itemType == 'Equippable':
-                self.bag['Equippable'].append(itemProperties)
-            if itemType == 'Usable':
-                self.bag['Usable'].append(itemProperties)
-            if itemType == 'Junk':
-                self.bag['Junk'].append(itemProperties)
-        else:
-            for i in self.bag[item['itemType']]:
-                if i == item:
-                    i['amount'] += 1
-                    break
+        self.alive = True
+        self.name = name
+        self.baseHp = hp
+        self.hp = hp
+        self.attack = attack
+        self.defense = defense
+        self.initiative = initiative
+        self.bag = Inventory(name)
+        
+        self.slots = {
+            "MainHand": '(none)',
+            "OffHand": '(none)',
+            "Head": '(none)',
+            "Chest": '(none)',
+            "Legs": '(none)',
+            "Feet": '(none)'
+        }
+        
+    def heal(self, amount):
+        
+        self.hp += amount
+        
+        if self.hp > self.baseHp:
             
-    
-    def addAmount(self, itemProperties, amount):
-        for i in range(amount):
-            self.add(itemProperties)
-    
-    def remove(self, itemName):
-        item = self.checkBag(itemName)
-        if item == []:
-            print("Item was not found, or was equipped.")
+            self.hp = self.baseHp
+        
+    def hurt(self, amount):
+        
+        if amount == False:
+            
+            pass
+        
+        elif amount > self.defense:
+            
+            amount = amount - self.defense
+            self.hp -= amount
+            
+            print("%s takes %s damage." %(self.name, amount))
+            
+            if self.hp <= 0:
+            
+                self.hp = 0
+                self.alive = False
+                
+                print(self.name + " has been slain!")
         else:
-            for i in range(len(self.bag[item['itemType']])):
-                if self.bag[item['itemType']][i] == item:
-                    if item['amount'] > 1:
-                        self.bag[item['itemType']][i]['amount'] -= 1
-                    else:
-                        del self.bag[item['itemType']][i]
+            
+            print(self.name + " takes 0 damage.")
+
+    def rollAttack(self):
+        
+        roll = randint(1, 21)
+        
+        if roll > 1:
+            
+            if roll < 20:
+                
+                if roll >= 10:
+                    
+                    return self.attack
+                
+                else:
+                    
+                    print("Missed.")
+                    return False
+                
+            else:
+                
+                print("Critical Hit!")
+                
+                return self.attack * 2
+            
+        else:
+            
+            print("Critical Fail!")
+            
+            self.hurt(self.attack)
+            
+            return False
+            
+    def unequip(self, itemName):
+        
+        for i in self.slots:
+            
+            if self.slots[i] == itemName:
+                
+                self.slots[i] = '(none)'
+                
+                for x in self.bag.inv:
+                    
+                    if x['ItemName'] == itemName:
+                        
+                        x['Equipped'] = False
+                        break
+            
+            break
+        
+        else:
+            
+            print("Item not found.")
+                                          
+    def equip(self, itemName):
+        
+        for i in self.bag.inv:
+            
+            if i['ItemName'] == itemName:
+                
+                if self.slots[i['EquipSlot']] == '(none)':
+                    
+                    i['Equipped'] = True
+                    self.slots[i['EquipSlot']] = itemName
                     break
                 
-    def removeAmount(self, itemName, amount):
-        for i in range(amount):
-            self.remove(itemName)
-
-    def inv(self):
-        print('_' * 40)
-        print(" ")
-        print(self.name + ':')
-        print(" ")
-        print("-----Inventory-----")
-        print(" ")
-        print("Items:")
-        print(" ")
-        if self.bag['Items'] == []:
-            print("    (none)")
-        else:
-            for i in self.bag['Items']:
-                print("    " + i['itemName'] + ':',"Amount: " + str(i['amount']), "Value: " + str(i['value']))
-        print(" ")
-        print("Equippable:")
-        print(" ")
-        if self.bag['Equippable'] == []:
-            print("    (none)")
-        else:
-            for i in self.bag['Equippable']:
-                if i['equipped']:
-                    print("    [" + i['itemName'] + ']:', " Amount:", str(i['amount']), " Value: " + str(i['value']), " Atk: " + str(i['attack']), " Def: " + str(i['defense']), " Slot: " + i['slot'], " (equipped)")
                 else:
-                    print("    [" + i['itemName'] + ']:', " Amount:", str(i['amount']), " Value: " + str(i['value']), " Atk: " + str(i['attack']), " Def: " + str(i['defense']), " Slot: " + i['slot'])
-        print(" ")
-        print("Usable:")
-        print(" ")
-        if self.bag['Usable'] == []:
-            print("    (none)")
-        else:
-            for i in self.bag['Usable']:
-                print("    " + i['itemName'] + ':', "Amount: " + str(i['amount']), "Value: " + str(i['value']), "Use: " + '(' + i['useDescription'] + ')')
-        print(" ")
-        print("Junk:")
-        print(" ")
-        if self.bag['Junk'] == []:
-            print("    (none)")
-        else:
-            for i in self.bag['Junk']:
-                print("    " + i['itemName'] + ':', "Value: " + str(i['value']))
-        print(" ")
-        print("_" * 40)    
-        
-    def stats(self):
-        print('_' * 40)
-        print(" ")
-        print(self.name + ':')
-        print(" ")
-        print("-----Stats-----")
-        print(" ")
-        print("    Hp: " + str(self.hp))
-        print("    Attack: " + str(self.attack))
-        print("    Defense:" + str(self.defense))
-        print(" ")
-        print("-----Gear-----")
-        print(" ")
-        for i in self.slots:
-            print(i + ":    " + self.slots[i])
-        print(" ")
-        print("_" * 40)
-
-    def configureStats(self):
-        total_attack = [x['attack'] for x in self.bag['Equippable'] if x['equipped'] == True]
-        total_defense = [x['defense'] for x in self.bag['Equippable'] if x['equipped'] == True]
-        self.attack = self.baseAttack
-        self.defense = self.baseDefense
-        for a, b in zip(total_attack, total_defense):
-            self.attack += a
-            self.defense += b
-
-    def equip(self, itemName):
-        item = [x for x in self.bag['Equippable'] if not x['equipped'] and itemName == x['itemName']]
-        if item == []:
-            print("Item was not found, or was already equipped.")
-        else:
-            item = item[0]
-            if self.slots[item['slot']] != '(none)':
-                self.unequip(self.slots[item['slot']])
-            for i in self.bag['Equippable']:
-                if i == item:
-                    i['equipped'] = True
-                    self.slots[i['slot']] = i['itemName']
+                    
+                    self.unequip(self.slots[i['EquipSlot']])
                     break
-            self.configureStats()
-            print("%s equipped %s!" %(self.name, itemName))
-
-    def unequip(self, itemName):
-        item = [x for x in self.bag['Equippable'] if x['equipped'] and itemName == x['itemName']]
-        if item == []:
-            print("Item was not found, or was already unequipped.")
+                    
         else:
-            item = item[0]
-            self.slots[item['slot']] = '(none)'
-            for i in self.bag['Equippable']:
-                if i == item:
-                    i['equipped'] = False
-            print("%s unequipped %s!" %(self.name, itemName))
             
-    def takingDamage(self, amount):
-        if amount != False:
-            if self.defense > amount:
-                amount = 0
-            else:
-                amount -= self.defense
-            if amount > self.hp:
-                self.hp = 0
-                self.alive = 0
-            else:
-                self.hp -= amount
-            print("%s takes %s damage!" %(self.name, amount))
-        else:
-            pass
+            print("Item not found.")
+                
+    def add(self, itemAttributes):
+        
+        self.bag.add(itemAttributes)
+    
+    def remove(self, itemName):
+        
+        for i in range(len(self.bag.inv)):
             
-    def rollAttack(self):
-        attack = self.attack
-        attackModifier = randint(1, 21)
-        if attackModifier == 20:
-            print("Critical Hit!")
-            attack *= 2
-            print()
-            return attack
-        elif(attackModifier == 1):
-            print("Critical Fail!")
-            self.takingDamage(attack)
-            return False
+            if self.bag.inv[i]['ItemName'] == itemName:
+                
+                if self.bag.inv[i]['Quantity'] > 1:
+                    
+                    self.bag.inv[i]['Quantity'] -= 1
+                    break
+                
+                else:
+                
+                    if self.bag.inv[i]['Equipped'] == True:
+                        
+                        self.unequip(itemName)
+                    
+                    del self.bag.inv[i]
+                    break
+        
         else:
-            return attack
-    
-    def restoreHp(self, amount):
-        if self.hp + amount > self.baseHp:
-            self.hp = self.baseHp
-            print('%s heals to full' %(self.name))
+            
+            print("Item not found.")
+                
+    def playStatus(self):
+        
+        if (self.hp / self.baseHp) > (2/3):
+            
+            print(self.name + " seems healthy")
+            
+        elif (self.hp / self.baseHp) > (1/3):
+            
+            print(self.name + " has minor injuries")
+            
         else:
-            print('%s heals for %s' %(self.name, amount))
-            self.hp += amount
+            
+            print(self.name + " is seriously injured")
     
-    def increasebaseHp(self, amount):
-        self.baseHp += amount
-        self.hp = self.baseHp
-        print('your base Hp increased by %s' %(amount))
-        
-    def increaseBaseAttack(self, amount):
-        self.baseAttack += amount
-        self.configureStats()
-        print('your base Attack increased by %s' %(amount))
-        
-    def increaseBaseDefense(self, amount):
-        self.baseDefense += amount
-        self.configureStats()
-        print('your base Defense increased by %s' %(amount))
-    
-    def use(self, itemName):
-        item = self.checkBag(itemName)
-        self.remove(itemName)
-        if item['useType'] == 'rhp':
-            self.restoreHp(item['useValue'])
-        elif item['useType'] == 'ibhp':
-            self.increasebaseHp(item['useValue'])
-        elif item['useType'] == 'iba':
-            self.increaseBaseAttack(item['useValue'])
-        elif item['useType'] == 'ibd':
-            self.increaseBaseDefense(item['useValue'])
-        else:
-            print("Could not find item or item was not Usable")
-        
-        
 if __name__ == '__main__':
-    player = Creature('player', 5, 2, 10)
-    print('Checking Inventory...')
-    player.inv()
-    print('Checking Stats...')
-    player.stats()
-    print('adding stuff...')
-    rock = Equippable('rock', 0, 1, 0, 'MainHand')
-    player.addAmount(rock.getItem(), 5)
-    player.inv()
-    player.equip('rock')
-    player.inv()
-    player.stats()
-    print('taking damage...')
-    player.takingDamage(player.rollAttack())
-    player.stats()
-    print('restoring hp...')
-    player.restoreHp(20)
-    player.stats()
-    print('increasing stats...')
-    player.increaseBaseAttack(3)
-    player.increaseBaseDefense(3)
-    player.increasebaseHp(20)
-    player.stats()
     
-        
-
-        
-        
-        
-        
-        
-        
+    ex = Creature('example')
+    rock = Equipment('rock', 0, 'MainHand', attack=5)
+    ex.add(rock.get())
+    print(ex.bag.inv)
+    ex.equip('rock')
+    print(ex.slots)
+    print(ex.bag.inv)
+    ex.remove('rock')
+    print(ex.slots)
+    print(ex.bag.inv)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
