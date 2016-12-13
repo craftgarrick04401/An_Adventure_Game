@@ -3,10 +3,10 @@ class Item(object):
     def __init__(self, itemName, itemValue):
         
         self.itemAttributes = {
-            "ItemName": itemName,
+            "ItemName": '[' + itemName + ']',
             "ItemValue": itemValue,
             "Equipped": 'unable',
-            "Quantity": 1
+            "Quantity": 0
             }
     
     def get(self):

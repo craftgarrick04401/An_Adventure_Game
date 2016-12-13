@@ -74,7 +74,7 @@ def encounter(player, opponent):
         
         if first == player.name:
             
-            wfi(True, player=player, opponent=opponent)
+            wfi(player, danger=True, opponent=opponent)
             sleep(0.5)
             
             if player.alive and opponent.alive:
@@ -90,11 +90,11 @@ def encounter(player, opponent):
             
             if player.alive and opponent.alive:
                 
-                wfi(True, player=player, opponent=opponent)
+                wfi(player, danger=True, opponent=opponent)
                 sleep(0.5)
                 opponent.playStatus()
         
-def wfi(danger=False, player=False, opponent=False):
+def wfi(player, danger=False, opponent=False):
     
     while 1:
         
@@ -120,11 +120,26 @@ def wfi(danger=False, player=False, opponent=False):
             if uinput == 'inv' or 'inventory':
                 pass
             elif uinput == 'char' or 'character':
-                pass
+                
+                print("\n%s: Hp = %s, Attack = %s, Defense = %s\n" %(player.name, player.hp, player.attack, player.defense))
+                
+                
             elif uinput == 'map':
                 pass
             elif uinput == 'move':
                 pass
+
+def main():
+    
+    uinput = input("What is your name?")
+    
+    player = Creature(uinput, initiative=5, hp=30, attack=2, defense=3)
+    
+    while player.alive:
+        
+        wfi(player)
+        
+
 
 if __name__ == '__main__':
     

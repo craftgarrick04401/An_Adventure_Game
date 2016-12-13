@@ -1,6 +1,7 @@
 from InventoryClass import Inventory
 from ItemClass import *
 from random import randint
+from time import sleep
 
 class Creature(object):
     
@@ -13,7 +14,7 @@ class Creature(object):
         self.attack = attack
         self.defense = defense
         self.initiative = initiative
-        self.bag = Inventory(name)
+        self.bag = Inventory(name + "'s Inventory")
         
         self.slots = {
             "MainHand": '(none)',
@@ -30,7 +31,11 @@ class Creature(object):
         
         if self.hp > self.baseHp:
             
-            self.hp = self.baseHp
+            self.healMax()
+            
+    def healMax(self):
+        
+        self.hp = self.baseHp
         
     def hurt(self, amount):
         
@@ -55,6 +60,26 @@ class Creature(object):
             
             print(self.name + " takes 0 damage.")
 
+    def changeBaseHp(self, amount):
+        
+        self.baseHp += amount
+        
+    def changeAttack(self, amount):
+        
+        self.attack += amount
+        
+        if self.attack < 0:
+            
+            self.attack = 0
+        
+    def changeDefense(self, amount):
+        
+        self.defense += amount
+        
+        if self.defense < 0:
+            
+            self.defense = 0
+    
     def rollAttack(self):
         
         roll = randint(1, 21)
@@ -69,7 +94,7 @@ class Creature(object):
                 
                 else:
                     
-                    print("Missed.")
+                    print(self.name + " missed!")
                     return False
                 
             else:
@@ -100,14 +125,23 @@ class Creature(object):
                         
                         x['Equipped'] = False
                         break
+                break
             
-            break
-        
         else:
             
             print("Item not found.")
-                                          
+            
+    def unequipAll(self):
+        
+        for i in self.slots:
+                
+            if self.slots[i] != '(none)':
+                    
+                self.unequip(self.slots[i])
+                                                        
     def equip(self, itemName):
+        
+        itemName = "[" + itemName + "]"
         
         for i in self.bag.inv:
             
@@ -128,9 +162,9 @@ class Creature(object):
             
             print("Item not found.")
                 
-    def add(self, itemAttributes):
+    def add(self, itemAttributes, amount=1):
         
-        self.bag.add(itemAttributes)
+        self.bag.add(itemAttributes, amount=amount)
     
     def remove(self, itemName):
         
@@ -169,19 +203,76 @@ class Creature(object):
         else:
             
             print(self.name + " is seriously injured")
-    
+
+    def character(self):
+        
+        print(self.name + "'s Equipment:\n")
+        
+        for i in self.slots:
+            
+            if self.slots[i] == '(none)':
+                
+                print("    " + i + ': (none)\n')
+                
+            else:
+            
+                print("    " + i + ':', self.slots[i], '\n')
+            
+            for x in self.bag.inv:
+                
+                if self.slots[i] == x['ItemName']:
+                    
+                    if x['Attack'] > 0:
+                        
+                        if x['Defense'] > 0:
+                            
+                            print("        Attack:", x['Attack'], "Defense:", x['Defense'], '\n')
+                            
+                        else:
+                            
+                            print("        Attack:", x['Attack'], '\n')
+                            
+                    elif x['Defense'] > 0:
+                        
+                        print("        Defense:", x['Defense'], '\n')
+            
+    def inv(self):
+        
+        self.bag.show()
+            
+    def loot(self, itemName, container, amount=1):
+        
+        for i in container:
+            
+            if i['ItemName'] == itemName:
+                
+                self.add(i, amount=amount)
+                container.remove(itemName, amount=amount)
+                break
+        
+        else:
+            
+            print("Item not found.")
+            
+    def lootAll(self, container):
+        
+        for i in container:
+            
+            self.add(i, amount=i['Quantity'])
+            
+        container.removeAll()
+        
 if __name__ == '__main__':
     
     ex = Creature('example')
     rock = Equipment('rock', 0, 'MainHand', attack=5)
     ex.add(rock.get())
-    print(ex.bag.inv)
     ex.equip('rock')
-    print(ex.slots)
-    print(ex.bag.inv)
-    ex.remove('rock')
-    print(ex.slots)
-    print(ex.bag.inv)
+    ex.character()
+    ex.unequipAll()
+    ex.character()
+    ex.inv()
+    
     
     
     
